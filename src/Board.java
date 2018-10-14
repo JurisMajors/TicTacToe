@@ -53,12 +53,10 @@ public class Board {
 
     ArrayList<int[]> getPossibleMoves(){
         ArrayList<int[]> moves = new ArrayList<>();
-        int[] tmp = new int[2];
         for (int i = 0; i < b.length; i++) {
             for (int j = 0; j < b[0].length; j++) {
                 if(b[i][j] == '-'){
-                    tmp[0] = i;
-                    tmp[1] = j;
+                    int[] tmp = {i, j};
                     moves.add(tmp);
                 }
             }
