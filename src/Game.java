@@ -10,6 +10,9 @@ public class Game {
     Player HUMAN;
     boolean human_turn;
     Board b = new Board();
+    int[] agentMove;
+    ArrayList<Integer> scores;
+    ArrayList<int[]> moves;
     HashMap<Integer, int[]> book;
 
     void setPlayers() {
@@ -63,59 +66,37 @@ public class Game {
     }
 
 
-//    int minimax(Board game, int depth, boolean maximizer) {
-//        if (game.endGame(false)) {
-//            return score(game, depth);
-//        }
-//        ArrayList<int[]> possible_moves = game.getPossibleMoves();
-//        int currentScore;
-//        int bestScore = maximizer ? Integer.MIN_VALUE : Integer.MAX_VALUE;
-//
-//        for (int[] move : possible_moves) {
-//            if (maximizer) {
-//                currentScore = minimax(game.newState(HUMAN, move[0], move[1]), depth + 1, false);
-//                if (currentScore > bestScore) {
-//                    bestScore = currentScore;
-//                    agentMove = move.clone();
-//                }
-//
-//            }else {
-//                currentScore = minimax(game.newState(AGENT, move[0], move[1]), depth + 1, true);
-//                if(currentScore < bestScore){
-//                    bestScore = currentScore;
-//                    agentMove = move.clone();
-//                }
-//            }
-//        }
-//        return bestScore;
-//    }
     int minimax(Board game, int depth, boolean maximizer) {
         if (game.endGame(false)) {
             return score(game, depth);
         }
         ArrayList<int[]> possible_moves = game.getPossibleMoves();
-        book = new HashMap<>();
+        scores = new ArrayList<>();
+        moves = new ArrayList<>();
         int currentScore;
         int bestScore = maximizer ? Integer.MIN_VALUE : Integer.MAX_VALUE;
         for(int[] move: possible_moves){
             if(maximizer){
                 currentScore = minimax(game.newState(HUMAN, move[0], move[1]), depth + 1, false);
-                book.put(currentScore, move);
             }else{
                 currentScore = minimax(game.newState(AGENT, move[0], move[1]), depth + 1, true);
-                book.put(currentScore, move);
             }
+            scores.add(currentScore);
+            moves.add(move);
         }
         if(maximizer){
-            for(Integer score: book.keySet()){
-                if(score > bestScore){
-                    bestScore = score;
+            for (int i = 0; i <scores.size(); i++) {
+                if(scores.get(i) > bestScore){
+                    bestScore = scores.get(i);
+                    agentMove = moves.get(i);
                 }
             }
+
         }else{
-            for(Integer score: book.keySet()){
-                if(score < bestScore){
-                    bestScore = score;
+            for (int i = 0; i <scores.size(); i++) {
+                if(scores.get(i) < bestScore){
+                    bestScore = scores.get(i);
+                    agentMove = moves.get(i);
                 }
             }
         }
@@ -131,14 +112,15 @@ public class Game {
             while (!b.endGame(true)) { // while iteration is running
                 int x, y;
                 if (human_turn) {
-                    System.out.println("Where do you want to put X:");
+                    System.out.println("Where do you want to put " + HUMAN.name + ":");
                     x = sc.nextInt();
                     y = sc.nextInt();
                     HUMAN.makeMove(b, x, y);
                 } else {
                     System.out.println("Computers turn:");
                     int best = minimax(b, 0, true);
-                    AGENT.makeMove(b, book.get(best)[0],  book.get(best)[1]);
+                    System.out.println(best);
+                    AGENT.makeMove(b, agentMove[0], agentMove[1]);
                 }
                 b.printBoard();
                 human_turn = !human_turn; // switch turns

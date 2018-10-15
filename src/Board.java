@@ -11,11 +11,11 @@ public class Board {
     boolean isWinner(char player){
         if(this.b[0][0] == this.b[0][1] && this.b[0][0] == this.b[0][2] && this.b[0][0] == player ||
                 this.b[0][0] == this.b[1][0] && this.b[0][0] == this.b[2][0] && this.b[0][0] == player ||
+                this.b[0][0] == this.b[1][1] && this.b[0][0] == this.b[2][2] && this.b[0][0] == player ||
                 this.b[0][1] == this.b[1][1] && this.b[0][1] == this.b[2][1] && this.b[0][1] == player ||
-                this.b[0][2] == this.b[1][2] && this.b[0][0] == this.b[2][2] && this.b[0][2] == player ||
+                this.b[0][2] == this.b[1][2] && this.b[0][2] == this.b[2][2] && this.b[0][2] == player ||
                 this.b[1][0] == this.b[1][1] && this.b[1][0] == this.b[1][2] && this.b[1][0] == player ||
                 this.b[2][0] == this.b[2][1] && this.b[2][0] == this.b[2][2] && this.b[2][0] == player ||
-                this.b[0][0] == this.b[1][1] && this.b[0][0] == this.b[2][2] && this.b[0][0] == player ||
                 this.b[2][0] == this.b[1][1] && this.b[2][0] == this.b[0][2] && this.b[2][0] == player
                 ){
             return true;
