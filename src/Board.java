@@ -9,16 +9,16 @@ public class Board {
     }
 
     boolean isWinner(char player){
-        if(this.b[0][0] == this.b[0][1] && this.b[0][0] == this.b[0][2] && this.b[0][0] == player ||
-                this.b[0][0] == this.b[1][0] && this.b[0][0] == this.b[2][0] && this.b[0][0] == player ||
-                this.b[0][0] == this.b[1][1] && this.b[0][0] == this.b[2][2] && this.b[0][0] == player ||
-                this.b[0][1] == this.b[1][1] && this.b[0][1] == this.b[2][1] && this.b[0][1] == player ||
-                this.b[0][2] == this.b[1][2] && this.b[0][2] == this.b[2][2] && this.b[0][2] == player ||
-                this.b[1][0] == this.b[1][1] && this.b[1][0] == this.b[1][2] && this.b[1][0] == player ||
-                this.b[2][0] == this.b[2][1] && this.b[2][0] == this.b[2][2] && this.b[2][0] == player ||
-                this.b[2][0] == this.b[1][1] && this.b[2][0] == this.b[0][2] && this.b[2][0] == player
-                ){
+        if ((b[0][0] == b[1][1] && b[0][0] == b[2][2] && b[0][0] == player) || (b[0][2] == b[1][1] && b[0][2] == b[2][0] && b[0][2] == player)) {
+            // System.out.println("O Diagonal Win");
             return true;
+        }
+        for (int i = 0; i < 3; ++i) {
+            if ((b[i][0] == b[i][1] && b[i][0] == b[i][2] && b[i][0] == player)
+                    || (b[0][i] == b[1][i] && b[0][i] == b[2][i] && b[0][i] == player)) {
+                //  System.out.println("O Row or Column win");
+                return true;
+            }
         }
 
         return false;
@@ -57,10 +57,12 @@ public class Board {
             for (int j = 0; j < b[0].length; j++) {
                 if(b[i][j] == '-'){
                     int[] tmp = {i, j};
+                    System.out.println(tmp[0] + " " +  tmp[1]);
                     moves.add(tmp);
                 }
             }
         }
+
         return moves;
     }
 

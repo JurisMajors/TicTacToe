@@ -11,9 +11,6 @@ public class Game {
     boolean human_turn;
     Board b = new Board();
     int[] agentMove;
-    ArrayList<Integer> scores;
-    ArrayList<int[]> moves;
-    HashMap<Integer, int[]> book;
 
     void setPlayers() {
         System.out.println("Press 0 if you want to be X or 1 otherwise: ");
@@ -34,9 +31,9 @@ public class Game {
 
     int score(Board game, int depth) {
         if (game.isWinner(AGENT.name)) {
-            return 10 ;
+            return 10-depth ;
         } else if (game.isWinner(HUMAN.name)) {
-            return -10 ;
+            return -10 + depth;
         } else {
             return 0;
         }
@@ -71,36 +68,32 @@ public class Game {
             return score(game, depth);
         }
         ArrayList<int[]> possible_moves = game.getPossibleMoves();
-        scores = new ArrayList<>();
-        moves = new ArrayList<>();
         int currentScore;
-        int bestScore = maximizer ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+        int max =  Integer.MIN_VALUE;
+        int min = Integer.MAX_VALUE;
+        Board tmp_state;
+        int counter = 0;
         for(int[] move: possible_moves){
             if(maximizer){
-                currentScore = minimax(game.newState(HUMAN, move[0], move[1]), depth + 1, false);
+                HUMAN.makeMove(b, move[0], move[1]);
+                tmp_state = b;
+                currentScore = minimax(tmp_state, depth + 1, false);
+                max = Math.max(currentScore, max);
+                if(currentScore>= 0){if(depth ==0){agentMove = move;}}
+                if(counter == possible_moves.size() - 1 && max<0){
+                    if(depth == 0) agentMove = move;
+                }
             }else{
-                currentScore = minimax(game.newState(AGENT, move[0], move[1]), depth + 1, true);
+                AGENT.makeMove(b, move[0], move[1]);
+                tmp_state = b;
+                currentScore = minimax(tmp_state, depth + 1, true);
+                min = Math.min(currentScore, min);
+                if(min == -1) {b.b[move[0]][move[1]] = '-'; break;}
             }
-            scores.add(currentScore);
-            moves.add(move);
+            b.b[move[0]][move[1]] = '-';
+            counter++;
         }
-        if(maximizer){
-            for (int i = 0; i <scores.size(); i++) {
-                if(scores.get(i) > bestScore){
-                    bestScore = scores.get(i);
-                    agentMove = moves.get(i);
-                }
-            }
-
-        }else{
-            for (int i = 0; i <scores.size(); i++) {
-                if(scores.get(i) < bestScore){
-                    bestScore = scores.get(i);
-                    agentMove = moves.get(i);
-                }
-            }
-        }
-        return bestScore;
+        return maximizer?max:min;
 
     }
 
@@ -111,6 +104,7 @@ public class Game {
 
             while (!b.endGame(true)) { // while iteration is running
                 int x, y;
+                agentMove = new int[2];
                 if (human_turn) {
                     System.out.println("Where do you want to put " + HUMAN.name + ":");
                     x = sc.nextInt();
