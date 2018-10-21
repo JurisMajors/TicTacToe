@@ -9,14 +9,12 @@ public class Board {
     }
 
     boolean isWinner(char player){
-        if ((b[0][0] == b[1][1] && b[0][0] == b[2][2] && b[0][0] == player) || (b[0][2] == b[1][1] && b[0][2] == b[2][0] && b[0][2] == player)) {
-            // System.out.println("O Diagonal Win");
+        if ((b[0][0] == b[1][1] && b[0][0] == b[2][2] && b[0][0] == player) || (b[0][2] == b[1][1] && b[0][2] == b[2][0] && b[0][2] == player)) { // diaognal checks
             return true;
         }
-        for (int i = 0; i < 3; ++i) {
+        for (int i = 0; i < 3; ++i) { // row or column win
             if ((b[i][0] == b[i][1] && b[i][0] == b[i][2] && b[i][0] == player)
                     || (b[0][i] == b[1][i] && b[0][i] == b[2][i] && b[0][i] == player)) {
-                //  System.out.println("O Row or Column win");
                 return true;
             }
         }
@@ -35,21 +33,6 @@ public class Board {
             this.b[i][j] = player;
         }
     }
-    protected Board clone(){
-        Board c = new Board();
-        for (int i = 0; i < b.length ; i++) {
-            for (int j = 0; j < b[0].length; j++) {
-                c.b[i][j] = b[i][j];
-            }
-        }
-        return c;
-    }
-
-    Board newState(Player player, int i, int j){
-        Board cloned = this.clone();
-        player.makeMove(cloned, i, j);
-        return cloned;
-    }
 
     ArrayList<int[]> getPossibleMoves(){
         ArrayList<int[]> moves = new ArrayList<>();
@@ -57,7 +40,7 @@ public class Board {
             for (int j = 0; j < b[0].length; j++) {
                 if(b[i][j] == '-'){
                     int[] tmp = {i, j};
-                    System.out.println(tmp[0] + " " +  tmp[1]);
+                   // System.out.println(tmp[0] + " " +  tmp[1]);
                     moves.add(tmp);
                 }
             }

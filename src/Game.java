@@ -1,4 +1,3 @@
-import com.sun.tools.attach.AgentInitializationException;
 
 import java.util.*;
 
@@ -31,24 +30,12 @@ public class Game {
 
     int score(Board game, int depth) {
         if (game.isWinner(AGENT.name)) {
-            return 10-depth ;
+            return 10 - depth ;
         } else if (game.isWinner(HUMAN.name)) {
             return -10 + depth;
         } else {
             return 0;
         }
-    }
-
-    int getMinIndex(ArrayList<Integer> a){
-        int min = a.get(0);
-        for (int i = 0; i < a.size() ; i++) {
-            if(a.get(i) < min){
-                min = a.get(i);
-            }
-        }
-
-        return min;
-
     }
 
     int getMaxIndex(ArrayList<Integer> a){
@@ -61,8 +48,6 @@ public class Game {
         return max;
 
     }
-
-
     int minimax(Board game, int depth, boolean maximizer) {
         if (game.endGame(false)) {
             return score(game, depth);
@@ -71,27 +56,23 @@ public class Game {
         int currentScore;
         int max =  Integer.MIN_VALUE;
         int min = Integer.MAX_VALUE;
-        Board tmp_state;
-        int counter = 0;
         for(int[] move: possible_moves){
             if(maximizer){
-                HUMAN.makeMove(b, move[0], move[1]);
-                tmp_state = b;
-                currentScore = minimax(tmp_state, depth + 1, false);
+                AGENT.makeMove(b, move[0], move[1]);
+                currentScore = minimax(b, depth + 1, false);
                 max = Math.max(currentScore, max);
-                if(currentScore>= 0){if(depth ==0){agentMove = move;}}
-                if(counter == possible_moves.size() - 1 && max<0){
-                    if(depth == 0) agentMove = move;
+                if(currentScore >= 0) { // if not first iteration of recursion we set the move that has the maximum score
+                    if (depth == 0) {
+                        agentMove = move;
+                        System.out.println(currentScore);
+                    }
                 }
             }else{
-                AGENT.makeMove(b, move[0], move[1]);
-                tmp_state = b;
-                currentScore = minimax(tmp_state, depth + 1, true);
+                HUMAN.makeMove(b, move[0], move[1]);
+                currentScore = minimax(b, depth + 1, true);
                 min = Math.min(currentScore, min);
-                if(min == -1) {b.b[move[0]][move[1]] = '-'; break;}
             }
             b.b[move[0]][move[1]] = '-';
-            counter++;
         }
         return maximizer?max:min;
 
@@ -113,7 +94,6 @@ public class Game {
                 } else {
                     System.out.println("Computers turn:");
                     int best = minimax(b, 0, true);
-                    System.out.println(best);
                     AGENT.makeMove(b, agentMove[0], agentMove[1]);
                 }
                 b.printBoard();
