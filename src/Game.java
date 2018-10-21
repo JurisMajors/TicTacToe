@@ -39,13 +39,13 @@ public class Game {
     }
 
     int getMaxIndex(ArrayList<Integer> a){
-        int max = a.get(0);
+        int max_index = 0;
         for (int i = 0; i < a.size() ; i++) {
-            if(a.get(i) > max){
-                max = a.get(i);
+            if(a.get(i) > a.get(max_index)){
+                max_index = i;
             }
         }
-        return max;
+        return max_index;
 
     }
     int minimax(Board game, int depth, boolean maximizer) {
@@ -53,28 +53,29 @@ public class Game {
             return score(game, depth);
         }
         ArrayList<int[]> possible_moves = game.getPossibleMoves();
+        ArrayList<Integer> scores = new ArrayList<>();
         int currentScore;
         int max =  Integer.MIN_VALUE;
         int min = Integer.MAX_VALUE;
         for(int[] move: possible_moves){
+            // for each move simulate
             if(maximizer){
-                AGENT.makeMove(b, move[0], move[1]);
-                currentScore = minimax(b, depth + 1, false);
-                max = Math.max(currentScore, max);
-                if(currentScore >= 0) { // if not first iteration of recursion we set the move that has the maximum score
-                    if (depth == 0) {
-                        agentMove = move;
-                        System.out.println(currentScore);
-                    }
+                AGENT.makeMove(b, move[0], move[1]); // simulate agent move
+                currentScore = minimax( b, depth + 1, false); // recurse for next board state
+                max = Math.max(currentScore, max); // get maximum available score
+                scores.add(currentScore);
+                if (depth == 0) {
+                    int best_index = getMaxIndex(scores); // index of best score
+                    agentMove = possible_moves.get(best_index); // get move with max score
                 }
             }else{
-                HUMAN.makeMove(b, move[0], move[1]);
+                HUMAN.makeMove(b, move[0], move[1]); // simulate human move
                 currentScore = minimax(b, depth + 1, true);
                 min = Math.min(currentScore, min);
             }
-            b.b[move[0]][move[1]] = '-';
+            b.b[move[0]][move[1]] = '-'; // reset board state
         }
-        return maximizer?max:min;
+        return maximizer?max:min; // return best score available
 
     }
 
